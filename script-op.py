@@ -3,14 +3,16 @@ import os
 import sys
 
 if (len(sys.argv) != 3 and len(sys.argv) != 4): # Gets the length of arguments
-    print("Please include your file names in the command. Syntax: python script.py <input-file> <output-file>")
+    print("Please include your file names in the command.")
+    print("Command Line Arguments: \"<input-file> <output-file> [pretty]\" <> = required, [] = optional")
     exit()
 inputFileName = sys.argv[1] # Gets the entries-file name
 inputFile = None
 try:
     inputFile = open(inputFileName, "r+") # The old timeline-entries.json from the google sheets.
 except:
-    print("Invalid input-file. Syntax: \"python script.py <input-file> <output-file> [pretty]\" <> = required, [] = optional")
+    print("[ERROR] Invalid input-file.")
+    print("Command Line Arguments: \"<input-file> <output-file> [pretty]\" <> = required, [] = optional")
     exit()
 
 jsonInput = json.load(inputFile) # Load the file into a json object.
@@ -28,7 +30,8 @@ if (outputFileName.endswith(".json") == False):
 try:
     outputFile = open(outputFileName, "w") # The old timeline-entries.json from the google sheets.
 except:
-    print("Invalid input-file. Syntax: \"python script.py <input-file> <output-file> [pretty]\" <> = required, [] = optional")
+    print("[ERROR] Invalid output-file.")
+    print("Command Line Arguments: \"<input-file> <output-file> [pretty]\" <> = required, [] = optional")
     exit()
 
 pretty = False
@@ -42,6 +45,18 @@ def generateData(old_json): # Method for formatting old json to new json
     json_obj = {}
 
     json_obj["title"] = []
+    json_obj["title"].append({
+        'media' : {
+            'caption' : "",
+            'credit' : "",
+            'url' : "",
+            'thumbnail': ""
+        },
+        'text' : {
+            'headline' : "Emmet's Example Timeline",
+            'text' : "This is bottom text"
+        }
+    })
 
     json_obj["events"] = []
     for i in range(len(old_json)):
