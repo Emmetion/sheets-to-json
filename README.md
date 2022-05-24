@@ -4,7 +4,7 @@ Open your command line inside of a folder with a text document of what the Exten
 Then, we run a quick python script inside of our console
 Read below to understand what everything means.
 
-``python script.py <input-file> <output-file> [pretty]``
+``python script.py <input-file> [pretty]``
 
 <> = Required, [] = Optional
 
