@@ -10,12 +10,10 @@ Read below to understand what everything means.
 
 Replace ``<input-file>`` with a JSON document of extracted google spreadsheet information. ex ``timeline-entries-example.json``
 
-Replace ``<output-file>`` with a file name that you want for the output JSON.
-
 Replace ``[pretty]`` with the word ``pretty`` if you want to view your output JSON file beautified, but it is not recommended to use this in production as it causes longer loading times. Leaving this option blank defaults it to minified.
 
 Once you've used the script, some information should pop up about the outcome of your file.
-Take the file with the name you gave (``<output-file>``), and download it.
+Take the file generated from the output folder. In the console it should tell you what number it is, feel free to rename this to something easier to remember.
 
 Once you've downloaded it, it should look something like ``output-example.json``, and you should be all set to upload to whatever host you are using.
 

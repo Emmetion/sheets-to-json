@@ -2,38 +2,43 @@ import json
 import os
 import sys
 
-if (len(sys.argv) != 3 and len(sys.argv) != 4): # Gets the length of arguments
-    print("Please include your file names in the command. Syntax: python script.py <input-file> <output-file>")
+if (len(sys.argv) < 2): # less than required amount of arguments
+    print("Please include your input. Syntax: \"python script.py <input-file> [pretty]\" <> = required, [] = optional")
     exit()
+elif (len(sys.argv) > 3): # more than option amount of arguments
+    print("Too many parameters input. Syntax: \"python script.py <input-file> [pretty]\" <> = required, [] = optional")
+    exit()
+
 inputFileName = sys.argv[1] # Gets the entries-file name
 inputFile = None
 try:
     inputFile = open(inputFileName, "r+") # The old timeline-entries.json from the google sheets.
 except:
-    print("Invalid input-file. Syntax: \"python script.py <input-file> <output-file> [pretty]\" <> = required, [] = optional")
+    print("Invalid input-file. Syntax: \"python script.py <input-file> [pretty]\" <> = required, [] = optional")
     exit()
 
 jsonInput = json.load(inputFile) # Load the file into a json object.
 
-# Choose an output file name.
-outputFileName = sys.argv[2]
-outputFile = None
+if (os.path.exists("output") == False):
+    os.mkdir("output")
 
-if (os.path.exists(outputFileName)): # Checks if output file is already generated, prevents overwriting. 
-    print("Provided output-file already exists! (" + outputFileName + ")")
-    exit()
-if (outputFileName.endswith(".json") == False):
-    print("Provided output file does not end with .json, please rerun this program with it correctly formatted.")
-    exit()
-try:
-    outputFile = open(outputFileName, "w") # The old timeline-entries.json from the google sheets.
-except:
-    print("Invalid input-file. Syntax: \"python script.py <input-file> <output-file> [pretty]\" <> = required, [] = optional")
+outputFileName = None
+outputFile = None
+for i in range(50):
+    outputFileName=  "timeline-data-export-" + str(i + 1) + ".json"
+    if (os.path.exists("output/"+outputFileName)):
+        continue
+    else:
+        outputFile = open("output/"+outputFileName, "w") # The old timeline-entries.json from the google sheets.
+        break
+
+if (outputFile == None):
+    print("[FATAL] Output file error, please delete all your timeline-data-exports-?.json files")
     exit()
 
 pretty = False
-if (len(sys.argv) == 4):
-    prettyString = sys.argv[3]
+if (len(sys.argv) == 3):
+    prettyString = sys.argv[2]
     if ("pretty" in prettyString): # Will change output type to pretty if 
         pretty = True
 
@@ -89,25 +94,45 @@ def generateData(old_json): # Method for formatting old json to new json
         event_types = event_types.split()
 
         # Adds an event with all information possible.
-        json_obj["events"].append({
-        'media' : {
-            'url' : media, 
-            'thumbnail' : media_thumbnail,
-            'caption' : media_caption,
-            'credit' : media_credit
-        },
-        'start_date': {
-            'year' : year,
-            'month' : month,
-            'day' : day,
-            'time' : time
-        },
-        'end_date': {
-            'year': end_year,
-            'month': end_month,
-            'day' : end_day,
-            'time' : end_time
-        }, 
+
+        # json_payload = {}
+
+        # media = {}
+
+        # if (media)
+
+        start_date = {
+            'year' : year
+        }
+        
+
+        if (month != ""): start_date["month"] = month
+        if (day != ""): start_date["day"] = day
+        if (time != ""): start_date["time"] = time
+
+        end_date = {}
+
+        if (end_year) != "": end_date["year"] = end_year
+        if (end_month != ""): end_date["month"] = end_month
+        if (end_day != ""): end_date["day"] = end_day
+        if (end_time != "") : end_date["time"] = end_time
+
+        media_data = {}
+        
+        if (media != ""): media_data["url"] = media
+        if (media_thumbnail != ""): media_data["thumbnail"] = media_thumbnail
+        if (media_caption != ""): media_data["caption"] = media_caption
+        if (media_credit != ""): media_data["credit"] = media_credit
+
+        text_data = {}
+
+        if (headline != ""): text_data["headline"] = headline
+        if (text != ""): text_data["text"] = text
+
+        event = {
+        'media' : media_data,
+        'start_date' : start_date,
+        'end_date': end_date, 
         'text' : {
             'headline': headline,
             'text' : text
@@ -116,7 +141,11 @@ def generateData(old_json): # Method for formatting old json to new json
         'background' : background,
         'event_types' : event_types,
         'type' : type
-        })
+        }
+
+        json_obj["events"].append(event)
+
+
         
     return json_obj # outputs the new formatted json
 
@@ -129,17 +158,18 @@ if (pretty):
 else:
     dump = json.dumps(jsonOutput) # Prints it into the document with an indent for beautification.
 
+
 outputFile.write(dump) # Writes it into the document and saves.
 
 title_slide = None
 if (len(jsonOutput["title"]) == 1):
     title_slide = jsonOutput["title"][0]
 
-print("  [SUCCESS] Compiled output file" + outputFileName + " from input file " + inputFileName + "\n\n")
+
+print("  [SUCCESS] Compiled output file " + outputFileName + " from input file " + inputFileName + "\n\n")
 print("OUTPUT INFORMATION:")
 print("  - Input File            : " + inputFileName)
 print("  - Output File           : " + outputFileName)
 print("  - Title Slide Headline  : " + ("N/A" if title_slide == None else title_slide["text"]["headline"]))
-print("  - Number of Events      : " +str(len(jsonOutput["events"])))
+print("  - Total Events: " + str(len(jsonOutput["events"])))
 if (pretty): print("  - Pretty Print          : True")
-
