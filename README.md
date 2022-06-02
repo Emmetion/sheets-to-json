@@ -27,4 +27,6 @@ Once you update the GitHub Repository, navigate to your website host and edit th
 
 Change the directory that the URL is pointing to. It should look something like `https://cdn.jsdelivr.net/gh/Emmetion/googlesheets-to-json/output-example.json`
 
+output-example.json is a placeholder for the file name you gave your events JSON file.
+
 And your done! You've successfully loaded your new events into a Timeline!
