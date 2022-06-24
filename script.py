@@ -63,6 +63,7 @@ def generateData(old_json): # Method for formatting old json to new json
         display_date = currentData["Display Date"]
         headline = currentData["Headline"]
         text = currentData["Text"]
+        group = currentData["Group"]
         media = currentData["Media"]
         media_caption = currentData["Media Caption"]
         media_credit = currentData["Media Credit"]
@@ -102,44 +103,42 @@ def generateData(old_json): # Method for formatting old json to new json
         # if (media)
 
         start_date = {
-            'year' : year
+            'year' : year,
+            'month' : month,
+            'day' : day,
+            'time' : time
+        }
+
+        end_date = {
+            'year' : end_year,
+            'month' : end_month,
+            'day' : end_day,
+            'time' : end_time
+        }
+
+        media_data = {
+            'url' : media,
+            'thumbnail' : media_thumbnail,
+            'caption' : media_caption,
+            'credit' : media_credit
+
         }
         
+        text_data = {
+            'headline' : headline,
+            'text' : text
+        }
 
-        if (month != ""): start_date["month"] = month
-        if (day != ""): start_date["day"] = day
-        if (time != ""): start_date["time"] = time
-
-        end_date = {}
-
-        if (end_year) != "": end_date["year"] = end_year
-        if (end_month != ""): end_date["month"] = end_month
-        if (end_day != ""): end_date["day"] = end_day
-        if (end_time != "") : end_date["time"] = end_time
-
-        media_data = {}
         
-        if (media != ""): media_data["url"] = media
-        if (media_thumbnail != ""): media_data["thumbnail"] = media_thumbnail
-        if (media_caption != ""): media_data["caption"] = media_caption
-        if (media_credit != ""): media_data["credit"] = media_credit
-
-        text_data = {}
-
-        if (headline != ""): text_data["headline"] = headline
-        if (text != ""): text_data["text"] = text
-
         event = {
         'media' : media_data,
         'start_date' : start_date,
         'end_date': end_date, 
-        'text' : {
-            'headline': headline,
-            'text' : text
-        },
+        'text' : text_data,
         'display_date' : display_date,
         'background' : background,
         'event_types' : event_types,
+        'group' : group,
         'type' : type
         }
 
